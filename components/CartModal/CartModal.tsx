@@ -79,8 +79,8 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
    };
 
    return (
-      <div className="cart-overlay">
-         <div className="cart-modal">
+      <div className="cart-overlay" onClick={onClose}>
+         <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
             <ToastContainer /> {/* 🔹 Contenedor de notificaciones */}
             <button className="close-btn" onClick={onClose}>
                ×
@@ -90,15 +90,20 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
                <p>Tu carrito está vacío</p>
             ) : (
                <>
-                  <ul>
+                  <ul className="cart-items">
                      {cart.map((item) => (
-                        <li key={item.id}>
-                           <span>
-                              {item.nombre} - ${item.precio} x {item.quantity}
-                           </span>
-                           <button onClick={() => removeFromCart(item.id)}>
-                              Eliminar
-                           </button>
+                        <li key={item.id} className="cart-item">
+                           <img
+                              src={item.imagen}
+                              alt={item.nombre}
+                              className="cart-item-img"
+                           />
+                           <div className="cart-item-info">
+                              <h4>{item.nombre}</h4>
+                              <p>
+                                 ${item.precio.toFixed(2)} x {item.quantity}
+                              </p>
+                           </div>
                            <input
                               type="number"
                               value={item.quantity}
@@ -106,76 +111,58 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
                               onChange={(e) =>
                                  updateQuantity(item.id, Number(e.target.value))
                               }
+                              className="quantity-input"
                            />
+                           <button
+                              className="remove-item-btn"
+                              onClick={() => removeFromCart(item.id)}
+                           >
+                              🗑️
+                           </button>
                         </li>
                      ))}
                   </ul>
 
-                  {/* Resumen del pedido */}
-                  <div className="resumen-pedido">
-                     <h3>Resumen del Pedido</h3>
-                     <p>
-                        <strong>Total:</strong> ${totalPedido}
+                  <div className="cart-footer">
+                     <p className="cart-total">
+                        <strong>Total:</strong> ${totalPedido.toFixed(2)}
                      </p>
-                  </div>
 
-                  {/* Inputs para el nombre y la nota */}
-                  <div className="input-group">
-                     <label>Nombre:</label>
-                     <input
-                        type="text"
-                        value={nombreCliente}
-                        onChange={(e) => setNombreCliente(e.target.value)}
-                        placeholder="Ingresa tu nombre"
-                     />
-                  </div>
+                     <div className="input-group">
+                        <label>Nombre:</label>
+                        <input
+                           type="text"
+                           value={nombreCliente}
+                           onChange={(e) => setNombreCliente(e.target.value)}
+                           placeholder="Ingresa tu nombre"
+                        />
+                     </div>
 
-                  <div className="input-group">
-                     <label>Nota opcional:</label>
-                     <textarea
-                        value={nota}
-                        onChange={(e) => setNota(e.target.value)}
-                        placeholder="Detalles adicionales para tu pedido..."
-                     />
-                  </div>
+                     <div className="input-group">
+                        <label>Nota opcional:</label>
+                        <textarea
+                           value={nota}
+                           onChange={(e) => setNota(e.target.value)}
+                           placeholder="Detalles adicionales para tu pedido..."
+                        />
+                     </div>
 
-                  {/* Botón de Confirmar Pedido */}
-                  {!confirmarPedido ? (
                      <motion.button
-                        className="confirmar-btn"
-                        onClick={handleConfirmarPedido}
-                        whileTap={{ scale: 0.9 }}
+                        className="whatsapp-btn"
+                        onClick={generarMensajeWhatsApp}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
                      >
-                        Confirmar Pedido
+                        Enviar a WhatsApp
                      </motion.button>
-                  ) : (
-                     <>
-                        {/* ✅ Animación del check antes de mostrar el botón de WhatsApp */}
-                        {animacionConfirmado && (
-                           <motion.div
-                              className="check-icon"
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ duration: 0.5 }}
-                           >
-                              ✅
-                           </motion.div>
-                        )}
 
-                        <motion.button
-                           className="whatsapp-btn"
-                           onClick={generarMensajeWhatsApp}
-                           initial={{ opacity: 0, scale: 0.8 }}
-                           animate={{ opacity: 1, scale: 1 }}
-                           transition={{ duration: 0.3 }}
-                        >
-                           Enviar a WhatsApp
-                        </motion.button>
-                     </>
-                  )}
+                     <button className="vaciar-btn" onClick={clearCart}>
+                        Vaciar Carrito
+                     </button>
+                  </div>
                </>
             )}
-            <button onClick={handleVaciarCarrito}>Vaciar Carrito</button>
          </div>
       </div>
    );

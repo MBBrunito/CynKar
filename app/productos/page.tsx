@@ -106,35 +106,45 @@ function ProductosContent() {
          <h1>Catálogo de Productos</h1>
 
          {/* Filtros */}
-         <div className="filtros">
-            <select
-               value={categoriaSeleccionada}
-               onChange={(e) => setCategoriaSeleccionada(e.target.value)}
-            >
-               <option value="">Todas las categorías</option>
-               {categorias.map((categoria) => (
-                  <option key={categoria} value={categoria}>
-                     {categoria}
-                  </option>
-               ))}
-            </select>
+         <div className="filters-container">
+            <div className="filter-group">
+               <label>Categoría:</label>
+               <select
+                  value={categoriaSeleccionada}
+                  onChange={handleCategoriaChange}
+               >
+                  <option value="">Todas</option>
+                  {categorias.map((categoria) => (
+                     <option key={categoria} value={categoria}>
+                        {categoria}
+                     </option>
+                  ))}
+               </select>
+            </div>
 
-            <input
-               type="text"
-               placeholder="Buscar producto..."
-               value={busqueda}
-               onChange={(e) => setBusqueda(e.target.value)}
-            />
+            <div className="filter-group">
+               <label>Buscar:</label>
+               <input
+                  type="text"
+                  placeholder="Ej: Fotocopias..."
+                  value={busqueda}
+                  onChange={handleBusquedaChange}
+               />
+            </div>
 
-            <select
-               value={rangoPrecio}
-               onChange={(e) => setRangoPrecio(e.target.value)}
-            >
-               <option value="">Todos los precios</option>
-               <option value="low">Menos de $500</option>
-               <option value="medium">$500 - $1000</option>
-               <option value="high">Más de $1000</option>
-            </select>
+            <div className="filter-group">
+               <label>Precio:</label>
+               <select value={rangoPrecio} onChange={handleRangoPrecioChange}>
+                  <option value="">Todos</option>
+                  <option value="low">Menos de $500</option>
+                  <option value="medium">$500 - $1000</option>
+                  <option value="high">Más de $1000</option>
+               </select>
+            </div>
+
+            <button className="reset-filters" onClick={resetearFiltros}>
+               Limpiar Filtros
+            </button>
          </div>
 
          {/* Botón para abrir el carrito */}
@@ -147,8 +157,8 @@ function ProductosContent() {
 
          {/* Mostrar productos filtrados */}
          <div className="productos-grid">
-            {productos.length > 0 ? (
-               productos.map((producto) => (
+            {productosFiltrados.length > 0 ? (
+               productosFiltrados.map((producto) => (
                   <ProductCard key={producto.id} producto={producto} />
                ))
             ) : (
