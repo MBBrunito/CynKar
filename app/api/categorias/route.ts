@@ -3,13 +3,14 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// 🔹 Obtener categorías únicas
 export async function GET() {
    try {
       const categorias = await prisma.producto.findMany({
          select: { categoria: true },
       });
 
-      // Extraer solo los valores únicos
+      // Extraer solo valores únicos
       const categoriasUnicas = [...new Set(categorias.map((c) => c.categoria))];
 
       return NextResponse.json(categoriasUnicas);
