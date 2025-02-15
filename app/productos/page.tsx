@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import CartModal from "../../components/CartModal/CartModal";
@@ -15,7 +15,7 @@ type Product = {
    categoria: string;
 };
 
-export default function ProductosPage() {
+function ProductosContent() {
    const [productos, setProductos] = useState<Product[]>([]);
    const [categorias, setCategorias] = useState<string[]>([]);
 
@@ -109,7 +109,7 @@ export default function ProductosPage() {
          <div className="filtros">
             <select
                value={categoriaSeleccionada}
-               onChange={handleCategoriaChange}
+               onChange={(e) => setCategoriaSeleccionada(e.target.value)}
             >
                <option value="">Todas las categorías</option>
                {categorias.map((categoria) => (
@@ -126,7 +126,10 @@ export default function ProductosPage() {
                onChange={(e) => setBusqueda(e.target.value)}
             />
 
-            <select value={rangoPrecio} onChange={handleRangoPrecioChange}>
+            <select
+               value={rangoPrecio}
+               onChange={(e) => setRangoPrecio(e.target.value)}
+            >
                <option value="">Todos los precios</option>
                <option value="low">Menos de $500</option>
                <option value="medium">$500 - $1000</option>
@@ -153,5 +156,14 @@ export default function ProductosPage() {
             )}
          </div>
       </div>
+   );
+}
+
+// 🔹 Envolver `ProductosContent` en `<Suspense>` para evitar errores en el build de Vercel
+export default function ProductosPage() {
+   return (
+      <Suspense fallback={<p>Cargando productos...</p>}>
+         <ProductosContent />
+      </Suspense>
    );
 }
