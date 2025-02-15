@@ -140,11 +140,7 @@ export default function ProductosPage() {
          </button>
 
          {/* Modal del carrito */}
-         <CartModal
-            isOpen={cartOpen}
-            onClose={() => setCartOpen(false)}
-            resetearFiltros={resetearFiltros}
-         />
+         <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
          {/* Mostrar productos filtrados */}
          <div className="productos-grid">
