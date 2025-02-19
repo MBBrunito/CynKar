@@ -6,12 +6,14 @@ type Product = {
    nombre: string;
    precio: number;
    imagen: string;
-   quantity: number;
+   stock: number;
 };
 
+type CartProduct = Product & { quantity: number }; // 🔹 Agregamos 'quantity'
+
 type CartState = {
-   cart: Product[];
-   addToCart: (product: Product) => void;
+   cart: CartProduct[]; // 🔹 Cambiamos a CartProduct[]
+   addToCart: (product: CartProduct) => void;
    removeFromCart: (id: string) => void;
    updateQuantity: (id: string, quantity: number) => void;
    clearCart: () => void;
@@ -26,18 +28,23 @@ const useCartStore = create<CartState>()(
          addToCart: (product) =>
             set((state) => {
                const exists = state.cart.find((item) => item.id === product.id);
+
                if (exists) {
+                  const totalEnCarrito = exists.quantity + product.quantity;
+
+                  if (totalEnCarrito > product.stock) {
+                     return state; // 🔹 No agregamos más de lo permitido
+                  }
+
                   return {
                      cart: state.cart.map((item) =>
                         item.id === product.id
-                           ? {
-                                ...item,
-                                quantity: item.quantity + product.quantity,
-                             }
+                           ? { ...item, quantity: totalEnCarrito }
                            : item
                      ),
                   };
                }
+
                return { cart: [...state.cart, product] };
             }),
 
@@ -49,7 +56,9 @@ const useCartStore = create<CartState>()(
          updateQuantity: (id, quantity) =>
             set((state) => ({
                cart: state.cart.map((item) =>
-                  item.id === id ? { ...item, quantity } : item
+                  item.id === id
+                     ? { ...item, quantity: Math.min(quantity, item.stock) } // 🔹 Evita exceder el stock
+                     : item
                ),
             })),
 

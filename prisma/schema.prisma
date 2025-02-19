@@ -14,10 +14,11 @@ datasource db {
 }
 
 model Producto {
-  id        String  @id @default(uuid())
-  nombre    String
-  imagen    String
-  precio    Float
-  categoria String
-  createdAt DateTime @default(now())
+  id         String  @id @default(uuid())
+  nombre     String
+  precio     Float
+  imagen     String
+  categoria  String
+  stock      Int     @default(10) // 🔹 Añadimos el campo de stock con valor por defecto
+  createdAt  DateTime @default(now())
 }

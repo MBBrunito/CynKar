@@ -90,6 +90,17 @@
   background-color: #1e3a8a;
 }
 
+.stock-available {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.stock-out {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+
 @media (max-width: 480px) {
   .productos-grid {
     grid-template-columns: 1fr; /* 🔹 En móviles, las tarjetas ocupan todo el ancho */
